@@ -1,208 +1,94 @@
-// import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:gemini_demo/core/constants/color_constant.dart';
+import 'package:gemini_demo/core/model/chat_model.dart';
+import 'package:gemini_demo/core/viewmodel/chats_view_model.dart';
+import 'package:gemini_demo/ui/views/base_view.dart';
+import 'package:gemini_demo/ui/widgets/common_text_form_field.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:google_generative_ai/google_generative_ai.dart';
+// ignore: must_be_immutable
+class ChatView extends StatelessWidget {
+  ChatView({super.key});
+  late ChatViewModel model;
 
-// class ChatScreen extends StatefulWidget {
-//   const ChatScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return BaseView<ChatViewModel>(
+      onModelReady: (model) {
+        this.model = model;
+      },
+      builder: (context, model, child) {
+        return chatMethod();
+      },
+    );
+  }
 
-//   @override
-//   State<ChatScreen> createState() => _ChatScreenState();
-// }
-
-// class _ChatScreenState extends State<ChatScreen> {
-
-//   List<Content> history = [];
-//   late final GenerativeModel _model;
-//   late final ChatSession _chat;
-//   final ScrollController _scrollController = ScrollController();
-//   final TextEditingController _textController = TextEditingController();
-//   final FocusNode _textFieldFocus = FocusNode();
-//   bool _loading = false;
-//   static const _apiKey = 'AIzaSyAJmsxI7u2G96u2S9bj8us3lfXU5CwGsdc'; // https://ai.google.dev/ (Get API key from this link)
-
-//   void _scrollDown() {
-//     WidgetsBinding.instance.addPostFrameCallback(
-//           (_) => _scrollController.animateTo(
-//         _scrollController.position.minScrollExtent,
-//         duration: const Duration(
-//           milliseconds: 750,
-//         ),
-//         curve: Curves.easeOutCirc,
-//       ),
-//     );
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _model = GenerativeModel(
-//       model: 'gemini-pro', apiKey: _apiKey,
-//     );
-//     _chat = _model.startChat();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final size = MediaQuery.of(context).size;
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Gemini AI'),
-//       ),
-//       body: Stack(
-//         children: [
-//           ListView.separated(
-//             padding: const EdgeInsets.fromLTRB(15, 0, 15, 90),
-//             itemCount: history.reversed.length,
-//             controller: _scrollController,
-//             reverse: true,
-//             itemBuilder: (context, index){
-//               var content = history.reversed.toList()[index];
-//               var text = content.parts
-//                   .whereType<TextPart>()
-//                   .map<String>((e) => e.text)
-//                   .join('');
-//               return Text(text);
-//             },
-//             separatorBuilder: (context, index){
-//               return const SizedBox(height: 15,);
-//             },
-//           ),
-//           Align(
-//             alignment: Alignment.bottomCenter,
-//             child: Container(
-//               width: MediaQuery.of(context).size.width,
-//               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-//               decoration: BoxDecoration(
-//                   color: Colors.white,
-//                   border: Border(top: BorderSide(color: Colors.grey.shade200))
-//               ),
-//               child: Row(
-//                 children: [
-//                   Expanded(
-//                     child: SizedBox(
-//                       height: 55,
-//                       child: TextField(
-//                         cursorColor: Colors.red,
-//                         controller: _textController,
-//                         autofocus: true,
-//                         focusNode: _textFieldFocus,
-//                         decoration: InputDecoration(
-//                             hintText: 'Ask me anything...',
-//                             hintStyle: const TextStyle(color: Colors.grey),
-//                             filled: true, fillColor: Colors.grey.shade200,
-//                             contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-//                             border: OutlineInputBorder(
-//                                 borderSide: BorderSide.none,
-//                                 borderRadius: BorderRadius.circular(10)
-//                             )
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                   const SizedBox(width: 10,),
-//                   GestureDetector(
-//                     onTap: (){
-//                       setState(() {
-//                         history.add(Content('user', [TextPart(_textController.text)]));
-//                       });
-//                       _sendChatMessage(_textController.text, history.length);
-//                     },
-//                     child: Container(
-//                       width: 50, height: 50,
-//                       alignment: Alignment.center,
-//                       decoration: BoxDecoration(
-//                           color: Colors.amber,
-//                           shape: BoxShape.circle,
-//                           boxShadow: [
-//                             BoxShadow(offset: const Offset(1,1), blurRadius: 3, spreadRadius: 3, color: Colors.black.withOpacity(0.05))
-//                           ]
-//                       ),
-//                       child: _loading
-//                           ? const Padding(
-//                             padding: EdgeInsets.all(15.0),
-//                             child: CircularProgressIndicator.adaptive(
-//                                                     backgroundColor: Colors.white, ),
-//                           )
-//                           : const Icon(Icons.send_rounded, color: Colors.white,),
-//                     ),
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Future<void> _sendChatMessage(String message, int historyIndex) async {
-//     setState(() {
-//       _loading = true;
-//       _textController.clear();
-//       _textFieldFocus.unfocus();
-//       _scrollDown();
-//     });
-
-//     List<Part> parts = [];
-
-//     try {
-//       var response = _chat.sendMessageStream(
-//         Content.text(message),
-//       );
-//       await for(var item in response){
-//         var text = item.text;
-//         if (text == null) {
-//           _showError('No response from API.');
-//           return;
-//         } else {
-//           setState(() {
-//             _loading = false;
-//             parts.add(TextPart(text));
-//             if((history.length - 1) == historyIndex){
-//               history.removeAt(historyIndex);
-//             }
-//             history.insert(historyIndex, Content('model', parts));
-
-//           });
-//         }
-//       }
-
-
-//     } catch (e, t) {
-//       log(e.toString());
-//       log(t.toString());
-//       _showError(e.toString());
-//       setState(() {
-//         _loading = false;
-//       });
-//     } finally {
-//       setState(() {
-//         _loading = false;
-//       });
-//     }
-//   }
-
-//   void _showError(String message) {
-//     showDialog(
-//       context: context,
-//       builder: (context) {
-//         return AlertDialog(
-//           title: const Text('Something went wrong'),
-//           content: SingleChildScrollView(
-//             child: SelectableText(message),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: const Text('OK'),
-//             )
-//           ],
-//         );
-//       },
-//     );
-//   }
-  
-// }
+  SafeArea chatMethod() {
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: model.msgList.length,
+                itemBuilder: (context, index) {
+                  ChatModel data = model.msgList[index];
+                  return Align(
+                    alignment: data.role == 'user'
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          color: ColorConstants.blue,
+                          child: Text(
+                            data.text,
+                            style: TextStyle(
+                                color: ColorConstants.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: TextFormFieldWidget(
+                      
+                      onEditingComplete: () {
+                        model.getData(model.messageController.text);
+                        model.messageController.clear();
+                      },
+                      controller: model.messageController),
+                ),
+                model.isLoading == true
+                    ? const Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: 5),
+                      child:  Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                    )
+                    : IconButton(
+                        onPressed: () {
+                          model.getData(model.messageController.text);
+                          model.messageController.clear();
+                        },
+                        icon: const Icon(Icons.send)),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

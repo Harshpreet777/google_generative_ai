@@ -39,6 +39,7 @@ dependencies:
   get_it: ^7.6.7
   lottie: ^3.1.0
   flutter_gemini: ^2.0.3
+  google_generative_ai:
 
 dev_dependencies:
   flutter_test:
