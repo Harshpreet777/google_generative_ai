@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/routing/router.dart';
 import 'package:gemini_demo/core/routing/routes.dart';
-import 'package:gemini_demo/ui/views/image_text_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,12 +10,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       onGenerateRoute: PageRouter.generateRoute,
-      initialRoute: Routes.homeRoute,
+      initialRoute: Routes.imageTextRoute,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ImageTextView(),
     );
   }
 }

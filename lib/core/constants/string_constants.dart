@@ -4,4 +4,5 @@ class StringConstants{
  static String chat='Chat';
  static String camera='Camera';
  static String galley='Galley';
+ static String textFieldHint='Write something here';
 }

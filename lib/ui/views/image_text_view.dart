@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/color_constant.dart';
@@ -11,7 +11,7 @@ import 'package:gemini_demo/ui/widgets/common_text_form_field.dart';
 // ignore: must_be_immutable
 class ImageTextView extends StatelessWidget {
   ImageTextView({super.key});
-  late ImageTextViewModel model;
+  ImageTextViewModel? model;
   @override
   Widget build(BuildContext context) {
     return BaseView<ImageTextViewModel>(
@@ -32,13 +32,16 @@ class ImageTextView extends StatelessWidget {
       children: [
         Expanded(
           child: ListView.builder(
+            controller: model?.scrollController,
             shrinkWrap: true,
-            itemCount: model.imageTextList.length,
+            itemCount: model?.imageTextList.length,
             itemBuilder: (context, index) {
-              ImageTextModel data = model.imageTextList[index];
-              log(data.role);
+              ImageTextModel? data;
+              if (model?.imageTextList[index] != null) {
+                data = model?.imageTextList[index];
+              }
               return Align(
-                alignment: data.role == 'user'
+                alignment: data?.role == 'user'
                     ? Alignment.centerRight
                     : Alignment.centerLeft,
                 child: Padding(
@@ -50,25 +53,30 @@ class ImageTextView extends StatelessWidget {
                       color: ColorConstants.blue,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: data.role == 'user'
+                        crossAxisAlignment: data?.role == 'user'
                             ? CrossAxisAlignment.end
                             : CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            data.text,
-                            style: TextStyle(
-                                color: ColorConstants.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
+                          Padding(
+                            padding: data?.role == 'user'
+                                ? const EdgeInsets.symmetric(horizontal: 20)
+                                : const EdgeInsets.all(0),
+                            child: Text(
+                              data?.text ?? '',
+                              style: TextStyle(
+                                  color: ColorConstants.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500),
+                            ),
                           ),
-                          data.photo != null
+                          data?.photo != null
                               ? Padding(
                                   padding: const EdgeInsets.all(20),
                                   child: SizedBox(
                                     height: 200,
                                     width: 200,
                                     child: Image.file(
-                                      data.photo!,
+                                      data?.photo ?? File(''),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -87,47 +95,96 @@ class ImageTextView extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Expanded(
-              child: TextFormFieldWidget(
-                  suffixWidget: model.photo != null
-                      ? Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Image.file(
-                              model.photo!,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  widget: IconButton(
-                      onPressed: () {
-                        _showPicker(context);
-                      },
-                      icon: Icon(
-                        Icons.photo,
-                        color: ColorConstants.black,
-                      )),
-                  onEditingComplete: () {
-                    model.getImageText();
-                    model.messageController.clear();
-                  },
-                  controller: model.messageController),
-            ),
-            model.isLoading == true
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Center(
-                      child: CircularProgressIndicator(),
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: ColorConstants.black),
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                child: Column(
+                  children: [
+                    model?.photo != null
+                        ? TextFormFieldWidget(
+                            onEditingComplete: () {
+                              if (model?.messageController.text.isNotEmpty ??
+                                  false) {
+                                model?.getImageText();
+                                model?.messageController.clear();
+                              }
+                            },
+                            controller: model?.messageController)
+                        : const SizedBox(),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: model?.photo != null
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: ClipRRect(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(20)),
+                                child: SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Image.file(
+                                    model?.photo ?? File(''),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
                     ),
-                  )
-                : IconButton(
-                    onPressed: () {
-                      model.getImageText();
-                      model.messageController.clear();
-                    },
-                    icon: const Icon(Icons.send)),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        model?.photo == null
+                            ? Expanded(
+                                child: TextFormFieldWidget(
+                                    onEditingComplete: () {
+                                      if (model?.messageController.text
+                                              .isNotEmpty ??
+                                          false) {
+                                        model?.getImageText();
+                                        model?.messageController.clear();
+                                      }
+                                    },
+                                    controller: model?.messageController),
+                              )
+                            : const SizedBox(),
+                        IconButton(
+                            onPressed: () {
+                              _showPicker(context);
+                            },
+                            icon: Icon(
+                              Icons.photo,
+                              color: ColorConstants.black,
+                            )),
+                        model?.isLoading == true
+                            ? const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : IconButton(
+                                onPressed: () {
+                                  if (model
+                                          ?.messageController.text.isNotEmpty ??
+                                      false) {
+                                    model?.getImageText();
+                                    model?.messageController.clear();
+                                  }
+                                },
+                                icon: const Icon(Icons.send)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         )
       ],
@@ -146,14 +203,14 @@ class ImageTextView extends StatelessWidget {
                       leading: const Icon(Icons.photo_library),
                       title: Text(StringConstants.galley),
                       onTap: () {
-                        model.imgFromGallery();
+                        model?.imgFromGallery();
                         Navigator.of(context).pop();
                       }),
                   ListTile(
                     leading: const Icon(Icons.photo_camera),
                     title: Text(StringConstants.camera),
                     onTap: () {
-                      model.imgFromCamera();
+                      model?.imgFromCamera();
 
                       Navigator.of(context).pop();
                     },

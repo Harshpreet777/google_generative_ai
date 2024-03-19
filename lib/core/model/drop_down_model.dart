@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/string_constants.dart';
 import 'package:gemini_demo/ui/views/chat_view.dart';
 import 'package:gemini_demo/ui/views/image_text_view.dart';
-import 'package:gemini_demo/ui/views/text_view.dart';
 
 class DropDownModel {
   DropDownModel(
@@ -13,6 +12,5 @@ class DropDownModel {
 }
 List<DropDownModel> dropDownList=[
   DropDownModel(index: 0, title:StringConstants.chat, widget: ChatView()),
-  DropDownModel(index: 1, title: StringConstants.text, widget: const TextView()),
-  DropDownModel(index: 2, title: StringConstants.textImage, widget: ImageTextView())
+  DropDownModel(index: 1, title: StringConstants.textImage, widget: ImageTextView())
 ];

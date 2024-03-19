@@ -8,13 +8,16 @@ class GoogleGenerative {
   static const apiKey = 'AIzaSyAJmsxI7u2G96u2S9bj8us3lfXU5CwGsdc';
 
   static Future<String> getData(String message) async {
+    String result = '';
     try {
       final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
       final prompts = message;
       final content = [Content.text(prompts)];
       final response = await model.generateContent(content);
       content.first.role;
-      return response.text ?? '';
+
+      result = response.text ?? '';
+      return result;
     } catch (e) {
       log("Error is $e");
     }

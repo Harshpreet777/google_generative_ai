@@ -3,7 +3,7 @@ import 'dart:io';
 
 class ImageTextModel {
   String text;
-  String role;
+  String? role;
   File? photo;
-  ImageTextModel({this.photo,required this.role, required this.text});
+  ImageTextModel({this.photo, this.role, required this.text});
 }
