@@ -2,34 +2,34 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/color_constant.dart';
+import 'package:gemini_demo/core/constants/string_constants.dart';
 import 'package:gemini_demo/core/model/image_text_model.dart';
-import 'package:gemini_demo/ui/widgets/common_chat_image.dart';
+import 'package:gemini_demo/ui/widgets/common_image.dart';
 import 'package:gemini_demo/ui/widgets/common_sized_box.dart';
 import 'package:gemini_demo/ui/widgets/common_text.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // ignore: must_be_immutable
 class MessageBody extends StatelessWidget {
-  MessageBody(
-      {super.key, required this.imageTextModel, required this.isLoading});
-  ImageTextModel? imageTextModel;
+  MessageBody({super.key, required this.chatModel, required this.isLoading});
+  ChatModel? chatModel;
   bool isLoading;
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: imageTextModel?.role == 'user'
+      alignment: chatModel?.role == StringConstants.user
           ? Alignment.centerRight
           : Alignment.centerLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
-            padding: imageTextModel?.role == 'user'
+            padding: chatModel?.role == StringConstants.user
                 ? const EdgeInsets.only(top: 10, right: 15)
                 : const EdgeInsets.only(
                     left: 15, right: 70, top: 10, bottom: 10),
             child: ClipRRect(
-              borderRadius: imageTextModel?.role == 'user'
+              borderRadius: chatModel?.role == StringConstants.user
                   ? const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       topLeft: Radius.circular(20),
@@ -40,14 +40,14 @@ class MessageBody extends StatelessWidget {
                       topRight: Radius.circular(20)),
               child: Container(
                 padding: const EdgeInsets.all(10),
-                color: imageTextModel?.role == 'user'
-                    ? ColorConstants.userColor
-                    : ColorConstants.modelColor,
+                color: chatModel?.role == StringConstants.user
+                    ? ColorConstants.grey7A8194
+                    : ColorConstants.green373E4E,
                 child: isLoading == true
                     ? LoadingAnimationWidget.waveDots(
                         color: ColorConstants.white, size: 30)
                     : CommonText(
-                        text: imageTextModel?.text ?? '',
+                        text: chatModel?.text ?? '',
                         color: ColorConstants.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -55,8 +55,13 @@ class MessageBody extends StatelessWidget {
               ),
             ),
           ),
-          imageTextModel?.photo != null
-              ? CommonChatImage(file: imageTextModel?.photo ?? File(''))
+          chatModel?.photo != null
+              ? CommonImages(
+                  bottomLeft: 20,
+                  topLeft: 20,
+                  bottomRight: 20,
+                  file: chatModel?.photo ?? File(''),
+                )
               : CommonSizedBox()
         ],
       ),

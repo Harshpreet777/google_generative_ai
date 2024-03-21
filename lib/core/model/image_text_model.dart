@@ -1,9 +1,9 @@
 
 import 'dart:io';
 
-class ImageTextModel {
+class ChatModel {
   String text;
   String? role;
   File? photo;
-  ImageTextModel({this.photo, this.role, required this.text});
+  ChatModel({this.photo, this.role, required this.text});
 }

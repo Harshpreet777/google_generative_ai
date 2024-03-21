@@ -3,8 +3,8 @@ import 'package:gemini_demo/core/constants/color_constant.dart';
 import 'package:gemini_demo/ui/widgets/common_text.dart';
 
 // ignore: must_be_immutable
-class CommonPopUpImage extends StatelessWidget {
-  CommonPopUpImage(
+class CommonPopUpItems extends StatelessWidget {
+  CommonPopUpItems(
       {super.key,
       required this.onTap,
       required this.colorsList,

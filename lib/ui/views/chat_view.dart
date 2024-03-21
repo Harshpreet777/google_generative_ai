@@ -6,24 +6,22 @@ import 'package:gemini_demo/core/constants/string_constants.dart';
 import 'package:gemini_demo/core/model/image_text_model.dart';
 import 'package:gemini_demo/core/viewmodel/chat_view_model.dart';
 import 'package:gemini_demo/ui/views/base_view.dart';
-import 'package:gemini_demo/ui/widgets/common_emoji_button.dart';
 import 'package:gemini_demo/ui/widgets/common_emoji_icon_button.dart';
-import 'package:gemini_demo/ui/widgets/common_image_asset.dart';
-import 'package:gemini_demo/ui/widgets/common_pop_up_image.dart';
-import 'package:gemini_demo/ui/widgets/common_pop_up_menu.dart';
+import 'package:gemini_demo/ui/widgets/pop_up_menu.dart';
 import 'package:gemini_demo/ui/widgets/common_sized_box.dart';
 import 'package:gemini_demo/ui/widgets/common_text.dart';
 import 'package:gemini_demo/ui/widgets/message_body.dart';
 import 'package:gemini_demo/ui/widgets/message_field.dart';
+import 'package:image_picker/image_picker.dart';
 
 // ignore: must_be_immutable
-class ImageTextView extends StatelessWidget {
-  ImageTextView({super.key});
-  ImageTextViewModel? model;
+class CharView extends StatelessWidget {
+  CharView({super.key});
+  ChatViewModel? model;
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<ImageTextViewModel>(
+    return BaseView<ChatViewModel>(
       onModelReady: (model) {
         this.model = model;
       },
@@ -36,7 +34,7 @@ class ImageTextView extends StatelessWidget {
             model.showEmojiPicker(false);
           },
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.fill,
                     image: AssetImage(
@@ -62,8 +60,9 @@ class ImageTextView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: CircleAvatar(
                 radius: 27,
-                child: CommonImageAssetWidget(
-                  image: ImageConstant.avatarImg,
+                child: Image.asset(
+                  ImageConstant.avatarImg,
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
@@ -76,56 +75,46 @@ class ImageTextView extends StatelessWidget {
           ],
         ),
         CommonSizedBox(height: 20),
-        chatMessageBuilder(),
+        buildChatMessage(),
         MessageField(
-            imageTextViewModel: model,
+            chatViewModel: model,
             onClipTap: () {
               _showPicker(context);
               model?.setEmojiPicker = false;
             },
-            emojiWiget: emojiButtonBuild(context)),
+            emojiWidget: CommonEmojiButton(
+              onPressed: () {
+                model?.showEmojiPicker(true);
+                FocusScope.of(context).unfocus();
+              },
+            )),
         model?.isEmojiPicker == true
-            ? Expanded(child: emojiPicker(context))
+            ? Expanded(
+                child: EmojiPicker(
+                textEditingController: model?.messageController,
+              ))
             : CommonSizedBox()
       ],
     );
   }
 
-  CommonEmojiButton emojiButtonBuild(BuildContext context) {
-    return CommonEmojiButton(
-      onPressed: () {
-        model?.showEmojiPicker(true);
-        FocusScope.of(context).unfocus();
-      },
-    );
-  }
-
-  Widget chatMessageBuilder() {
+  Widget buildChatMessage() {
     return Expanded(
       child: ListView.builder(
         controller: model?.scrollController,
         shrinkWrap: true,
-        itemCount: model?.imageTextList.length,
+        itemCount: model?.chatList.length,
         itemBuilder: (context, index) {
-          int last = (model?.imageTextList.length ?? 0);
-          ImageTextModel? data;
-          if (model?.imageTextList[index] != null) {
-            data = model?.imageTextList[index];
+          int last = (model?.chatList.length ?? 0);
+          ChatModel? data;
+          if (model?.chatList[index] != null) {
+            data = model?.chatList[index];
           }
           bool isLoading =
-              index + 1 == last && data?.role != 'user' && data?.text == '';
-          return MessageBody(imageTextModel: data, isLoading: isLoading);
+              index + 1 == last && data?.role != StringConstants.user && data?.text == '';
+          return MessageBody(chatModel: data, isLoading: isLoading);
         },
       ),
-    );
-  }
-
-  Widget emojiPicker(BuildContext context) {
-    return CommonEmojiPicker(
-      controller: model?.messageController,
-      onEmojiSelected: (Category? category, Emoji emoji) {
-        (model?.messageController.text ?? '') + emoji.emoji;
-      },
     );
   }
 
@@ -134,31 +123,13 @@ class ImageTextView extends StatelessWidget {
         backgroundColor: ColorConstants.transparent,
         context: context,
         builder: (BuildContext context) {
-          return CommonPopUpMenu(
-            widget: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CommonPopUpImage(
-                    text: StringConstants.galley,
-                    onTap: () {
-                      model?.imgFromGallery();
-                      Navigator.of(context).pop();
-                    },
-                    colorsList: [
-                      ColorConstants.blueAccent700,
-                      ColorConstants.blue
-                    ],
-                    icon: Icons.photo_library),
-                CommonPopUpImage(
-                    text: StringConstants.camera,
-                    onTap: () {
-                      model?.imgFromCamera();
-                      Navigator.pop(context);
-                    },
-                    colorsList: [ColorConstants.pinkAccent, ColorConstants.red],
-                    icon: Icons.photo_camera),
-              ],
-            ),
+          return PopUpMenuWidget(
+            onTapCamera: () {
+              model?.imgFromDevice(ImageSource.camera);
+            },
+            onTapGalley: () {
+              model?.imgFromDevice(ImageSource.gallery);
+            },
           );
         });
   }

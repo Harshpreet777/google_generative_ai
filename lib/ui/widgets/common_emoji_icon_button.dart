@@ -10,7 +10,7 @@ class CommonEmojiButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      icon: Icon(
+      icon: const Icon(
         Icons.emoji_emotions,
         color: ColorConstants.white38,
       ),

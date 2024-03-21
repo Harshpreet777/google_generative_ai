@@ -1,4 +1,4 @@
 class Routes {
-  static const String imageTextRoute='imageText';
+  static const String chatRoute='chat';
 
 }

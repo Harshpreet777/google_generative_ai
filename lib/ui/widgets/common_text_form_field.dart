@@ -28,7 +28,7 @@ class CommonTextFormField extends StatelessWidget {
         onTap: onTap,
         cursorColor: ColorConstants.white,
         style:
-            TextStyle(color: ColorConstants.white, fontWeight: FontWeight.w500),
+            const TextStyle(color: ColorConstants.white, fontWeight: FontWeight.w500),
         onEditingComplete: onEditingComplete,
         controller: controller,
         decoration: InputDecoration(
@@ -36,8 +36,8 @@ class CommonTextFormField extends StatelessWidget {
             prefixIcon: prefixIconWidget,
             filled: true,
             hintText: StringConstants.textFieldHint,
-            hintStyle: TextStyle(color: ColorConstants.white38, fontSize: 17),
-            fillColor: ColorConstants.modelColor,
+            hintStyle: const TextStyle(color: ColorConstants.white38, fontSize: 17),
+            fillColor: ColorConstants.green373E4E,
             border: const OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.all(Radius.circular(50)))),
