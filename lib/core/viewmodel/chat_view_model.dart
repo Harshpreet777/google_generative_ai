@@ -16,7 +16,7 @@ class ChatViewModel extends BaseModel {
 
   File? _photo;
   ImagePicker _imagePicker = ImagePicker();
-  String _fileName = '';
+  String? _fileName;
   List<ChatModel> _chatList = [];
   bool? _isTyping;
   bool? _isEmojiPicker;
@@ -25,7 +25,7 @@ class ChatViewModel extends BaseModel {
   bool? get isTyping => _isTyping;
   List<ChatModel> get chatList => _chatList;
   File? get photo => _photo;
-  String get fileName => _fileName;
+  String? get fileName => _fileName;
   ImagePicker get imagePicker => _imagePicker;
 
   set setImagePicker(ImagePicker setImagePicker) {
@@ -82,8 +82,10 @@ class ChatViewModel extends BaseModel {
   getChat() async {
     File? image = photo;
     log(image.toString());
-    chatList.add(
-        ChatModel(role: StringConstants.user, text: messageController.text, photo: image));
+    chatList.add(ChatModel(
+        role: StringConstants.user,
+        text: messageController.text,
+        photo: image));
     scrollMessages();
     updateUI();
     setPhoto = null;

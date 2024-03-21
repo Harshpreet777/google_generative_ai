@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../enums/viewstate.dart';
+import 'package:gemini_demo/core/enum/viewstate.dart';
 
 class BaseModel with ChangeNotifier {
   ViewState _state = ViewState.idle;

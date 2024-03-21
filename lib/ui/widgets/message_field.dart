@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/color_constant.dart';
 import 'package:gemini_demo/core/viewmodel/chat_view_model.dart';
 import 'package:gemini_demo/ui/widgets/common_image.dart';
-import 'package:gemini_demo/ui/widgets/common_menu_button.dart';
+import 'package:gemini_demo/ui/widgets/common_image_asset.dart';
 import 'package:gemini_demo/ui/widgets/common_send_button.dart';
 import 'package:gemini_demo/ui/widgets/common_sized_box.dart';
 import 'package:gemini_demo/ui/widgets/common_text_form_field.dart';

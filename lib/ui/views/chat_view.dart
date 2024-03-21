@@ -110,8 +110,9 @@ class CharView extends StatelessWidget {
           if (model?.chatList[index] != null) {
             data = model?.chatList[index];
           }
-          bool isLoading =
-              index + 1 == last && data?.role != StringConstants.user && data?.text == '';
+          bool isLoading = index + 1 == last &&
+              data?.role != StringConstants.user &&
+              data?.text == '';
           return MessageBody(chatModel: data, isLoading: isLoading);
         },
       ),
@@ -126,9 +127,11 @@ class CharView extends StatelessWidget {
           return PopUpMenuWidget(
             onTapCamera: () {
               model?.imgFromDevice(ImageSource.camera);
+              Navigator.pop(context);
             },
             onTapGalley: () {
               model?.imgFromDevice(ImageSource.gallery);
+              Navigator.pop(context);
             },
           );
         });
