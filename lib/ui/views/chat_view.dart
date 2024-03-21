@@ -1,98 +1,165 @@
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/color_constant.dart';
-import 'package:gemini_demo/core/model/chat_model.dart';
-import 'package:gemini_demo/core/viewmodel/chats_view_model.dart';
+import 'package:gemini_demo/core/constants/image_constants.dart';
+import 'package:gemini_demo/core/constants/string_constants.dart';
+import 'package:gemini_demo/core/model/image_text_model.dart';
+import 'package:gemini_demo/core/viewmodel/chat_view_model.dart';
 import 'package:gemini_demo/ui/views/base_view.dart';
-import 'package:gemini_demo/ui/widgets/common_text_form_field.dart';
+import 'package:gemini_demo/ui/widgets/common_emoji_button.dart';
+import 'package:gemini_demo/ui/widgets/common_emoji_icon_button.dart';
+import 'package:gemini_demo/ui/widgets/common_image_asset.dart';
+import 'package:gemini_demo/ui/widgets/common_pop_up_image.dart';
+import 'package:gemini_demo/ui/widgets/common_pop_up_menu.dart';
+import 'package:gemini_demo/ui/widgets/common_sized_box.dart';
+import 'package:gemini_demo/ui/widgets/common_text.dart';
+import 'package:gemini_demo/ui/widgets/message_body.dart';
+import 'package:gemini_demo/ui/widgets/message_field.dart';
 
 // ignore: must_be_immutable
-class ChatView extends StatelessWidget {
-  ChatView({super.key});
-  ChatViewModel? model;
+class ImageTextView extends StatelessWidget {
+  ImageTextView({super.key});
+  ImageTextViewModel? model;
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<ChatViewModel>(
+    return BaseView<ImageTextViewModel>(
       onModelReady: (model) {
         this.model = model;
       },
       builder: (context, model, child) {
-        return SafeArea(child: Scaffold(body: chatMethod()));
+        return SafeArea(
+            child: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+            model.keyboardAppear(false);
+            model.showEmojiPicker(false);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: AssetImage(
+                      ImageConstant.backGroundImage,
+                    ))),
+            child: Scaffold(
+              backgroundColor: ColorConstants.transparent,
+              body: buildBody(context),
+            ),
+          ),
+        ));
       },
     );
   }
 
-  Widget chatMethod() {
+  Widget buildBody(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: ListView.builder(
-            controller: model?.scrollController,
-            shrinkWrap: true,
-            itemCount: model?.msgList.length,
-            itemBuilder: (context, index) {
-              ChatModel? data;
-              if (model?.msgList[index] != null) {
-                data = model?.msgList[index];
-              }
-              return Align(
-                alignment: data?.role == 'user'
-                    ? Alignment.centerRight
-                    : Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      color: data?.role == 'user'
-                          ? ColorConstants.blue
-                          : ColorConstants.green,
-                      child: Text(
-                        data?.text ?? "",
-                        style: TextStyle(
-                            color: ColorConstants.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        CommonSizedBox(height: 10),
         Row(
-          mainAxisSize: MainAxisSize.max,
           children: [
-            Expanded(
-              child: TextFormFieldWidget(
-                  onEditingComplete: () {
-                    if (model?.messageController.text.isNotEmpty ?? false) {
-                      model?.getData(model?.messageController.text ?? '');
-                    }
-                    model?.messageController.clear();
-                  },
-                  controller: model?.messageController),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CircleAvatar(
+                radius: 27,
+                child: CommonImageAssetWidget(
+                  image: ImageConstant.avatarImg,
+                ),
+              ),
             ),
-            model?.isLoading == true
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : IconButton(
-                    onPressed: () {
-                      if (model?.messageController.text.isNotEmpty ?? false) {
-                        model?.getData(model?.messageController.text ?? '');
-                      }
-                      model?.messageController.clear();
-                    },
-                    icon: const Icon(Icons.send)),
+            CommonText(
+              text: StringConstants.chatAppTitle,
+              color: ColorConstants.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w400,
+            ),
           ],
-        )
+        ),
+        CommonSizedBox(height: 20),
+        chatMessageBuilder(),
+        MessageField(
+            imageTextViewModel: model,
+            onClipTap: () {
+              _showPicker(context);
+              model?.setEmojiPicker = false;
+            },
+            emojiWiget: emojiButtonBuild(context)),
+        model?.isEmojiPicker == true
+            ? Expanded(child: emojiPicker(context))
+            : CommonSizedBox()
       ],
     );
+  }
+
+  CommonEmojiButton emojiButtonBuild(BuildContext context) {
+    return CommonEmojiButton(
+      onPressed: () {
+        model?.showEmojiPicker(true);
+        FocusScope.of(context).unfocus();
+      },
+    );
+  }
+
+  Widget chatMessageBuilder() {
+    return Expanded(
+      child: ListView.builder(
+        controller: model?.scrollController,
+        shrinkWrap: true,
+        itemCount: model?.imageTextList.length,
+        itemBuilder: (context, index) {
+          int last = (model?.imageTextList.length ?? 0);
+          ImageTextModel? data;
+          if (model?.imageTextList[index] != null) {
+            data = model?.imageTextList[index];
+          }
+          bool isLoading =
+              index + 1 == last && data?.role != 'user' && data?.text == '';
+          return MessageBody(imageTextModel: data, isLoading: isLoading);
+        },
+      ),
+    );
+  }
+
+  Widget emojiPicker(BuildContext context) {
+    return CommonEmojiPicker(
+      controller: model?.messageController,
+      onEmojiSelected: (Category? category, Emoji emoji) {
+        (model?.messageController.text ?? '') + emoji.emoji;
+      },
+    );
+  }
+
+  _showPicker(context) {
+    showModalBottomSheet(
+        backgroundColor: ColorConstants.transparent,
+        context: context,
+        builder: (BuildContext context) {
+          return CommonPopUpMenu(
+            widget: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CommonPopUpImage(
+                    text: StringConstants.galley,
+                    onTap: () {
+                      model?.imgFromGallery();
+                      Navigator.of(context).pop();
+                    },
+                    colorsList: [
+                      ColorConstants.blueAccent700,
+                      ColorConstants.blue
+                    ],
+                    icon: Icons.photo_library),
+                CommonPopUpImage(
+                    text: StringConstants.camera,
+                    onTap: () {
+                      model?.imgFromCamera();
+                      Navigator.pop(context);
+                    },
+                    colorsList: [ColorConstants.pinkAccent, ColorConstants.red],
+                    icon: Icons.photo_camera),
+              ],
+            ),
+          );
+        });
   }
 }

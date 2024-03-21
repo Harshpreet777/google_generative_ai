@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/routing/routes.dart';
 import 'package:gemini_demo/ui/views/chat_view.dart';
-import 'package:gemini_demo/ui/views/home_view.dart';
-import 'package:gemini_demo/ui/views/image_text_view.dart';
 
 class PageRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case Routes.homeRoute:
-        return pageRoute(HomeView(), settings);
-      case Routes.chatRoute:
-        return pageRoute(ChatView(), settings);
       case Routes.imageTextRoute:
         return pageRoute(ImageTextView(), settings);
 
