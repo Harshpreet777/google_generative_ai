@@ -25,10 +25,11 @@ class CommonTextFormField extends StatelessWidget {
         minLines: 1,
         maxLines: 30,
         textInputAction: TextInputAction.go,
+        keyboardType: TextInputType.text,
         onTap: onTap,
         cursorColor: ColorConstants.white,
-        style:
-            const TextStyle(color: ColorConstants.white, fontWeight: FontWeight.w500),
+        style: const TextStyle(
+            color: ColorConstants.white, fontWeight: FontWeight.w500),
         onEditingComplete: onEditingComplete,
         controller: controller,
         decoration: InputDecoration(
@@ -36,7 +37,8 @@ class CommonTextFormField extends StatelessWidget {
             prefixIcon: prefixIconWidget,
             filled: true,
             hintText: StringConstants.textFieldHint,
-            hintStyle: const TextStyle(color: ColorConstants.white38, fontSize: 17),
+            hintStyle:
+                const TextStyle(color: ColorConstants.white38, fontSize: 17),
             fillColor: ColorConstants.green373E4E,
             border: const OutlineInputBorder(
                 borderSide: BorderSide.none,

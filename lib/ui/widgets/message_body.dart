@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/color_constant.dart';
 import 'package:gemini_demo/core/constants/string_constants.dart';
-import 'package:gemini_demo/core/model/image_text_model.dart';
+import 'package:gemini_demo/core/model/chat_model.dart';
 import 'package:gemini_demo/ui/widgets/common_image.dart';
 import 'package:gemini_demo/ui/widgets/common_sized_box.dart';
 import 'package:gemini_demo/ui/widgets/common_text.dart';
@@ -25,7 +25,7 @@ class MessageBody extends StatelessWidget {
         children: [
           Padding(
             padding: chatModel?.role == StringConstants.user
-                ? const EdgeInsets.only(top: 10, right: 15)
+                ? const EdgeInsets.only(top: 10, right: 15, left: 70)
                 : const EdgeInsets.only(
                     left: 15, right: 70, top: 10, bottom: 10),
             child: ClipRRect(

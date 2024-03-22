@@ -6,14 +6,6 @@ import 'package:gemini_demo/core/model/chat_model.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GoogleGenerativeServices {
-  // late GenerativeModel _gemini;
-  // static final GoogleGenerativeServices _instance = GoogleGenerativeServices._internal();
-  // factory GoogleGenerativeServices() {
-  //   return _instance;
-  // }
-  // GoogleGenerativeServices._internal() {
-  //   _gemini = GenerativeModel.instance;
-  // }
   Future<String> getText(String message) async {
     String result = '';
     try {
@@ -22,6 +14,8 @@ class GoogleGenerativeServices {
       final prompts = message;
       final content = [Content.text(prompts)];
       final response = await model.generateContent(content);
+      content.first.role;
+
       result = response.text ?? '';
       return result;
     } catch (e) {

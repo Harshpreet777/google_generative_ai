@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/color_constant.dart';
 import 'package:gemini_demo/core/constants/image_constants.dart';
 import 'package:gemini_demo/core/constants/string_constants.dart';
-import 'package:gemini_demo/core/model/image_text_model.dart';
+import 'package:gemini_demo/core/model/chat_model.dart';
 import 'package:gemini_demo/core/viewmodel/chat_view_model.dart';
 import 'package:gemini_demo/ui/views/base_view.dart';
 import 'package:gemini_demo/ui/widgets/common_emoji_icon_button.dart';

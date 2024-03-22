@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gemini_demo/core/constants/string_constants.dart';
-import 'package:gemini_demo/core/model/image_text_model.dart';
+import 'package:gemini_demo/core/model/chat_model.dart';
 import 'package:gemini_demo/core/repositories/api_services.dart';
 import 'package:gemini_demo/core/viewmodel/base_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,7 +15,7 @@ class ChatViewModel extends BaseModel {
   GoogleGenerativeServices generativeServices = GoogleGenerativeServices();
 
   File? _photo;
-  ImagePicker _imagePicker = ImagePicker();
+  ImagePicker? _imagePicker;
   String? _fileName;
   List<ChatModel> _chatList = [];
   bool? _isTyping;
@@ -26,10 +26,10 @@ class ChatViewModel extends BaseModel {
   List<ChatModel> get chatList => _chatList;
   File? get photo => _photo;
   String? get fileName => _fileName;
-  ImagePicker get imagePicker => _imagePicker;
+  ImagePicker? get imagePicker => _imagePicker;
 
   set setImagePicker(ImagePicker setImagePicker) {
-    _imagePicker = setImagePicker;
+    _imagePicker =setImagePicker;
   }
 
   set setFileName(String setFileName) {
@@ -53,7 +53,7 @@ class ChatViewModel extends BaseModel {
   }
 
   Future imgFromDevice(ImageSource source) async {
-    final pickedFile = await imagePicker.pickImage(source: source);
+    final pickedFile = await imagePicker?.pickImage(source: source);
     if (pickedFile != null) {
       setPhoto = File(pickedFile.path);
       setFileName = basename(photo?.path ?? "");
