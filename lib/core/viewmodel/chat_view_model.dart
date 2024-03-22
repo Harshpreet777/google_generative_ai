@@ -15,7 +15,7 @@ class ChatViewModel extends BaseModel {
   GoogleGenerativeServices generativeServices = GoogleGenerativeServices();
 
   File? _photo;
-  ImagePicker? _imagePicker;
+  ImagePicker? _imagePicker=ImagePicker();
   String? _fileName;
   List<ChatModel> _chatList = [];
   bool? _isTyping;

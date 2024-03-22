@@ -58,10 +58,12 @@ class CharView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CircleAvatar(
-                radius: 27,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(30)),
                 child: Image.asset(
-                  ImageConstant.avatarImg,
+                  height: 45,
+                  width: 45,
+                  ImageConstant.googleAiIcon,
                   fit: BoxFit.fill,
                 ),
               ),
