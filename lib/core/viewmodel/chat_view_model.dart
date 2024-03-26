@@ -17,13 +17,13 @@ class ChatViewModel extends BaseModel {
   File? _photo;
   ImagePicker? _imagePicker=ImagePicker();
   String? _fileName;
-  List<ChatModel> _chatList = [];
+  List<ChatModel> chatList = [];
   bool? _isTyping;
   bool? _isEmojiPicker;
 
   bool? get isEmojiPicker => _isEmojiPicker;
   bool? get isTyping => _isTyping;
-  List<ChatModel> get chatList => _chatList;
+  // List<ChatModel> get chatList => _chatList;
   File? get photo => _photo;
   String? get fileName => _fileName;
   ImagePicker? get imagePicker => _imagePicker;
@@ -48,9 +48,9 @@ class ChatViewModel extends BaseModel {
     _isTyping = setTyping;
   }
 
-  set setChatList(List<ChatModel> setChatList) {
-    _chatList = setChatList;
-  }
+  // set setChatList(List<ChatModel> setChatList) {
+  //   _chatList = setChatList;
+  // }
 
   Future imgFromDevice(ImageSource source) async {
     final pickedFile = await imagePicker?.pickImage(source: source);

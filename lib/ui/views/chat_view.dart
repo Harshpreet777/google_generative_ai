@@ -63,7 +63,7 @@ class CharView extends StatelessWidget {
                 child: Image.asset(
                   height: 45,
                   width: 45,
-                  ImageConstant.googleAiIcon,
+                  ImageConstant.aiIcon,
                   fit: BoxFit.fill,
                 ),
               ),
@@ -105,7 +105,7 @@ class CharView extends StatelessWidget {
       child: ListView.builder(
         controller: model?.scrollController,
         shrinkWrap: true,
-        itemCount: model?.chatList.length,
+        itemCount: model?.chatList.length ?? 0,
         itemBuilder: (context, index) {
           int last = (model?.chatList.length ?? 0);
           ChatModel? data;

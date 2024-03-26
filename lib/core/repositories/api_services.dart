@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:gemini_demo/core/constants/api_constant.dart';
+import 'package:gemini_demo/core/constants/api_constants.dart';
 import 'package:gemini_demo/core/model/chat_model.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
